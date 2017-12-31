@@ -6,8 +6,8 @@ Created on Thu Dec 28 10:09:23 2017
 @author: Ohi Dibua
 This file contains a class that defines a non-parametric particle used in the problem of finding the optimal
 partitioning (number of clusters) of a data set and the number of outliers that this data set uses.
-It combines algorithms proposed from (SITE and SITE). The measure of optimal partitoning proposed 
-is used in (SITE), and the method of choosing the best particle is inspired by (SITE). The details of
+It combines algorithms proposed from [1] and [2]. The measure of optimal partitoning proposed 
+is used in [3], and the method of choosing the best particle is inspired by [4]. The details of
 this are discussed in the clusterFitness file which contains the fitnessFunction and fitnessEvaluation 
 function for this particle.
 
@@ -34,6 +34,10 @@ The particle class initializes the following arguments:
     Function that takes in two states that define proposed solutions and outputs 
     the solution that most meets the objective. If passing in the global best state,
     and empty list is passed in for localBestState. For typical PSO the states are state = (fitness,x)
+[1] Cura. "A particle swarm optimizatin approach to clustering" Expert Systems With Applications. 2012
+[2] Chawla et al. "A unified approach to clustering and outlier detection" Proceedings of the 2013 SIAM International Conference on Data Mining
+[3] Chou, C.H.  et al."A new cluster validity measure and its application to image compression." Pattern Anal. Appl. 7 (2), 205– 220.
+[4] Behesti et al., "Non-parametric particle swarm optimization for global optimization",Applied Soft. Computing. 2015
 """ 
 import numpy as np
 import copy

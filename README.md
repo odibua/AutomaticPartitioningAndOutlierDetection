@@ -1,4 +1,4 @@
-# AutomaticPartitioningAndOutlierDetection
+# Automatic Partitioning And OutlierDetection
 
 This file contains code that executes an algorithm that automatically determines the optimal paritioning of data, 
 and that simulatneously determines the optimal number of outliers in the data. The outliers are detected 

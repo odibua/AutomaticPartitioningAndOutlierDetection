@@ -16,9 +16,13 @@ and [2] introduces a hyper-parameter epsilon that sets a threshold that determin
 needs to change when an outlier is removed in order for the outlier to be considered real.
 
 [1] Cura. "A particle swarm optimizatin approach to clustering" Expert Systems With Applications. 2012
+http://www.sciencedirect.com/science/article/pii/S0957417411010852
 
 [2] Chawla et al. "A unified approach to clustering and outlier detection" Proceedings of the 2013 SIAM International Conference on Data Mining
+http://epubs.siam.org/doi/abs/10.1137/1.9781611972832.21
 
-[3] Chou, C.H.  et al."A new cluster validity measure and its application to image compression." Pattern Anal. Appl. 7 (2), 205– 220.
+[3] Chou, C.H.  et al."A new cluster validity measure and its application to image compression." Pattern Anal. Appl. 7 (2), 205– 220. 2004
+https://link.springer.com/article/10.1007/s10044-004-0218-1
 
 [4] Behesti et al., "Non-parametric particle swarm optimization for global optimization",Applied Soft. Computing. 2015
+http://www.sciencedirect.com/science/article/pii/S1568494614006474

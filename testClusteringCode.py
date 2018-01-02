@@ -17,9 +17,9 @@ import copy
 from npsoInterpFuncs import npsoClustersAndOutliersInterpFunc
 from npsoClusterAndOutlierParticle import npsoParticleClustersAndOutliersFunc
 
-testString =['shuttle','wdbc','wine','iris','ArtificialOutliers','ArtificialNoOutliers']
+testString =['shuttle','wdbc','wine','iris','glass','ArtificialOutliers','ArtificialNoOutliers']
 #Choose data for testing algorithm
-testUse=testString[5]
+testUse=testString[4]
 
 
 ##############################################################################################
@@ -58,11 +58,11 @@ elif (testUse=='wdbc'):
     # load the 13 features
     XData = all_data[:,1:]
     ##Downsample malignant
-    idxBenign=np.where(yData==0)[0]
-    idxMalign=np.where(yData==1)[0]
-    idxMalign=idxMalign[np.random.choice(len(idxMalign),10)];
-    yData = yData[np.concatenate((idxBenign,idxMalign)).astype(int)];
-    XData = XData[np.concatenate((idxBenign,idxMalign)).astype(int),0:];
+#    idxBenign=np.where(yData==0)[0]
+#    idxMalign=np.where(yData==1)[0]
+#    idxMalign=idxMalign[np.random.choice(len(idxMalign),10)];
+#    yData = yData[np.concatenate((idxBenign,idxMalign)).astype(int)];
+#    XData = XData[np.concatenate((idxBenign,idxMalign)).astype(int),0:];
     y=yData
     shapeData = np.shape(XData);
     nData=shapeData[0]; nFeatures=shapeData[1];
@@ -91,7 +91,7 @@ elif (testUse=='ArtificialOutliers'):
     nData=shapeData[0]; nFeatures=shapeData[1];
 elif (testUse=='ArtificialNoOutliers'):
     cov=np.array([[0.05, 0],[0,0.05]])
-    XData=np.vstack([np.random.multivariate_normal([0,0],cov,10),np.random.multivariate_normal([2,2],cov,10),np.random.multivariate_normal([2.9,2.9],cov/100,1),np.random.multivariate_normal([4,4],cov,10),np.random.multivariate_normal([8,8],cov,10)])
+    XData=np.vstack([np.random.multivariate_normal([0,0],cov,10),np.random.multivariate_normal([2,2],cov,10),np.random.multivariate_normal([4,4],cov,10),np.random.multivariate_normal([8,8],cov,10)])
     shapeData = np.shape(XData);
     nData=shapeData[0]; nFeatures=shapeData[1];
     
@@ -105,15 +105,15 @@ featureMin=np.min(XDataNormalized,axis=0);
 featureMax=np.max(XDataNormalized,axis=0);
 
 #Define X as data features
-X=XData
+X=XDataNormalized
 
 #Defines maximum and minimum number of clusters, number of outliers
 #and feature components
 nData=np.shape(X)[0]
-KpMin=1.0;
+KpMin=2.0;
 KpMax=20.0;
 lMin=0.0;
-lMax=0.1*nData#20.0#0.01*nData;#20.0;
+lMax=0*0.1*nData#20.0#0.01*nData;#20.0;
 numEvalState=8;
 featureMin=np.min(X,axis=0);
 featureMax=np.max(X,axis=0);
@@ -134,10 +134,10 @@ velMax.append(posMax[2]/2.0);
 #Define parameters that govern behavior of particle swarm
 #optimization
 numParticles=40;
-neighborSize = 2#np.ceil(numParticles/5).astype(int);
-w=1.0;
+neighborSize = 4#np.ceil(numParticles/5).astype(int);
+w=0.75;
 tol=1e-3;
-numIters=100
+numIters=500
 kappa = 0.5;
 mult=1;
 c1=2.0
@@ -158,26 +158,27 @@ weightsList=[]
 weightsOutliersList=[]
 
 #Number of trials
-nTrials=1;
+nTrials=10;
 eps=0.05; #Hyper-parameter that determines extent to which objective must 
             #change in order for solution that has different number of outliers 
             #to be accepted.            
-wCS=1.0; wF=1.0; wKp=0.1 #Define weights to be used for each component of feature 
+wCS=1.0; wF=0.0; wKp=0.0 #Define weights to be used for each component of feature 
 evaluationFunc = clusterOutlierFitness(eps); #Defines evaluation function with hyper-parameter eps
 variableKpFitCSMeasFunc=variableKpFitness(wCS,wF,wKp); #Define fitness objective function with weights of terms
-#clusterOutlierParticles=psoParticleClustersAndOutliersFunc(X,sigma)
-clusterOutlierParticles=npsoParticleClustersAndOutliersFunc(X,sigma); #Define npso particle class using the data and sigma
+clusterOutlierParticles=psoParticleClustersAndOutliersFunc(X,sigma)
+#clusterOutlierParticles=npsoParticleClustersAndOutliersFunc(X,sigma); #Define npso particle class using the data and sigma
 pso=PSO(); 
-for j in range(nTrials):
+for j in range(nTrials): 
+    print('Trial',j+1)
     #Execute standard particle swarm optimization
-  #  output1=pso.executePSO(c1,c2,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles,optimType,numEvalState,variableKpFitCSMeasFunc,evaluationFunc)
+    output1=pso.executePSO(c1,c2,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles,optimType,numEvalState,variableKpFitCSMeasFunc,evaluationFunc)
  
     #Execute constrict particle swarm optimization
-#    c1=2.05; c2=c1;
-#    output1=pso.executeGCPSO(constrict,c1,c2,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles,optimType,numEvalState,variableKpFitCSMeasFunc,evaluationFunc)
+ #   c1=2.05; c2=c1;
+  #  output1=pso.executeGCPSO(constrict,c1,c2,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles,optimType,numEvalState,variableKpFitCSMeasFunc,evaluationFunc)
 #   
     #Execute non-parameteric particle swarm optimization  
-    output1=pso.executeNPSO(neighborSize,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles,optimType,numEvalState,variableKpFitCSMeasFunc,evaluationFunc,npsoClustersAndOutliersInterpFunc)
+#    output1=pso.executeNPSO(neighborSize,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles,optimType,numEvalState,variableKpFitCSMeasFunc,evaluationFunc,npsoClustersAndOutliersInterpFunc)
  
     evalState=output1[1]  
     bestGlobalFitnessList.append(evalState[0])

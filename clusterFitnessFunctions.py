@@ -22,7 +22,7 @@ def variableKpFitness(wCS,wF,wKp):
         numeratorCS=0;
         denominatorCS=0;
         activeCentroid=0
-        eps=1;
+        eps=0.001;
         f=0; nData=np.shape(data)[0]
         minList=[];
         activeCentroid=0;
@@ -85,27 +85,29 @@ def clusterOutlierFitness(eps):
             localBestOutliers=localBestState[5]
             localBestWeights=localBestState[6]
             localBestWeightsOutliers=localBestState[7];
-            
+            #print("Before",localBestl,currentBestl,"numEmpty",currentNumEmptyClusters,localBestNumEmptyClusters,"Kp",currentKp,localBestKp )
             newLocalBool=0;
-            if (currentNumEmptyClusters < localBestNumEmptyClusters):
+            if (currentNumEmptyClusters < localBestNumEmptyClusters): 
                 newLocalBool=1;
             if (currentNumEmptyClusters==localBestNumEmptyClusters):
                 if (currentBestl<localBestl and np.abs((currentFitness-localBestFitness))<eps):
                     newLocalBool=1;
-                if (currentBestl>localBestl): 
+                elif (currentBestl>localBestl): 
                     if (optimType.lower()=='max'):
                         if ((currentFitness-localBestFitness) > eps):
                             newGlobalBool=1;
                     elif (optimType.lower()=='min'):
                         if (currentFitness-localBestFitness<-eps):
                             newGlobalBool=1;
-                elif (currentBestl==localBestl):                           
+                elif (currentBestl==localBestl): 
+                  #  print("Same")                          
                     if (optimType.lower()=='max'):
                         if (currentFitness > localBestFitness):
                             newLocalBool=1;
                     elif (optimType.lower()=='min'):
                         if (currentFitness < localBestFitness):
                             newLocalBool=1;
+            #raw_input("Press")
             if (newLocalBool==1):
                 localBestState=(currentFitness,currentKp,currentCentroids,currentNumEmptyClusters,currentBestl,currentBestOutliers,currentWeights,currentWeightsOutliers)            
             return localBestState 
@@ -128,14 +130,14 @@ def clusterOutlierFitness(eps):
             localBestOutliers=localBestState[5]
             localBestWeights=localBestState[6]
             localBestWeightsOutliers=localBestState[7];
-
+           # print("Before",localBestl,globalBestl,localBestNumEmptyClusters,globalBestNumEmptyClusters )
             newGlobalBool=0;
             if (localBestNumEmptyClusters < globalBestNumEmptyClusters or globalBestNumEmptyClusters==float("inf")):
                 newGlobalBool=1; 
-            if (localBestNumEmptyClusters==globalBestNumEmptyClusters):
+            if (localBestNumEmptyClusters==globalBestNumEmptyClusters):                            
                 if (localBestl<globalBestl and np.abs((globalBestFitness-localBestFitness))<eps):
                     newGlobalBool=1;
-                if (localBestl>globalBestl): 
+                elif (localBestl>globalBestl): 
                     if (optimType.lower()=='max'):
                         if ((localBestFitness-globalBestFitness) > eps):
                             newGlobalBool=1; 
@@ -143,6 +145,7 @@ def clusterOutlierFitness(eps):
                         if (localBestFitness-globalBestFitness<-eps):
                             newGlobalBool=1;
                 elif (localBestl==globalBestl):  
+                   # print("Same")
                     if (optimType.lower()=='max'):
                         if (localBestFitness > globalBestFitness):
                             newGlobalBool=1;
@@ -151,7 +154,7 @@ def clusterOutlierFitness(eps):
                             newGlobalBool=1;
                             
             if (newGlobalBool==1):
-                print("Change global best solution Kp is",localBestKp, " l is",localBestl)
+                print("Change global best solution Kp is",localBestKp, " l is",localBestl, "l used to be ",globalBestl,"with fitness ",localBestFitness)
                 globalBestState=(localBestFitness,localBestKp,localBestCentroid,localBestNumEmptyClusters,localBestl,localBestOutliers,localBestWeights,localBestWeightsOutliers)
                         
             return globalBestState 

@@ -26,3 +26,74 @@ https://link.springer.com/article/10.1007/s10044-004-0218-1
 
 [4] Behesti et al., "Non-parametric particle swarm optimization for global optimization",Applied Soft. Computing. 2015
 http://www.sciencedirect.com/science/article/pii/S1568494614006474
+
+# Required Packages
+
+This code only requires the presence of scipy, numpy, random, and copy
+
+# Running Tests
+
+Tests can be run through the testClusteringCode file. At the top of the file you can choose the data set
+to test the algorithm on. The algorithm works perfectly on the artificial data sets.
+
+     testString =['shuttle','wdbc','wine','iris','ArtificialOutliers','ArtificialNoOutliers']
+     #Choose data for testing algorithm
+     testUse=testString[5]
+
+The variables that characterize the particles to be used in the optimization are modified below:
+
+     #Defines maximum and minimum number of clusters, number of outliers
+     #and feature components
+     nData=np.shape(X)[0]
+     KpMin=1.0;
+     KpMax=20.0;
+     lMin=0.0;
+     lMax=0.1*nData#20.0#0.01*nData;#20.0;
+     numEvalState=8;
+     
+and the variables that characterize the PSO process are modified in the following block of code
+
+     numParticles=40;
+     neighborSize = 2#np.ceil(numParticles/5).astype(int);
+     w=1.0;
+     tol=1e-3;
+     numIters=100
+     kappa = 0.5;
+     mult=1;
+     c1=2.0
+     c2 = c1*mult;
+     constrict=1.0
+     optimType='Min';
+     ...
+     nTrials=1;
+     eps=0.05; #Hyper-parameter that determines extent to which objective must 
+                 #change in order for solution that has different number of outliers 
+                 #to be accepted.            
+     wCS=1.0; wF=1.0; wKp=0.1 #Define weights to be used for each component of feature 
+     ...
+     #clusterOutlierParticles=psoParticleClustersAndOutliersFunc(X,sigma) 
+     clusterOutlierParticles=npsoParticleClustersAndOutliersFunc(X,sigma); #Define npso particle class using the data and          sigma
+     
+Finally, the code is executed, and the relevant information stored, in the following chunk:
+
+     pso=PSO(); #Define PSO class that contains functions that execute different versions of PSO
+     for j in range(nTrials): 
+         print('Trial',j+1)
+         #Execute standard particle swarm optimization        
+         output1=pso.executePSO(c1,c2,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles,optimType,
+         numEvalState,variableKpFitCSMeasFunc,evaluationFunc)
+         
+         #Execute constrict particle swarm optimization
+         #c1=2.05; c2=c1;
+         output1=pso.executeGCPSO(constrict,c1,c2,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles
+         ,optimType,numEvalState,variableKpFitCSMeasFunc,evaluationFunc)
+         
+         #Execute non-parameteric particle swarm optimization  
+         output1=pso.executeNPSO(neighborSize,w,posMin,posMax,velMin,velMax,numIters,numParticles,clusterOutlierParticles,
+         optimType,numEvalState,variableKpFitCSMeasFunc,evaluationFunc,npsoClustersAndOutliersInterpFunc)
+ 
+
+         
+    
+         
+

@@ -56,10 +56,13 @@ def variableKpFitness(wCS,wF,wKp):
                     denominatorCS=denominatorCS+np.min(distFunc(centroids[k],np.delete(centroids,k,axis=0)));
                 else:
                     denominatorCS=eps 
-                f=f+f0/nDatInCentroid;
-    
+                if (wCS>0):
+                    f=f+f0/nDatInCentroid;
+                else:
+                    f=f+f0;
+                       
         csMeasure=numeratorCS/(denominatorCS);
-        return wCS*csMeasure+wF*f+wKp*np.log(Kp) 
+        return wCS*csMeasure+wF*f/len(data)+wKp*np.log(Kp) 
     return variableKpFitCSMeasFunc
 
 ########################################################################################################
@@ -134,7 +137,7 @@ def clusterOutlierFitness(eps):
             newGlobalBool=0;
             if (localBestNumEmptyClusters < globalBestNumEmptyClusters or globalBestNumEmptyClusters==float("inf")):
                 newGlobalBool=1; 
-            if (localBestNumEmptyClusters==globalBestNumEmptyClusters):                            
+            if (localBestNumEmptyClusters==globalBestNumEmptyClusters):                           
                 if (localBestl<globalBestl and np.abs((globalBestFitness-localBestFitness))<eps):
                     newGlobalBool=1;
                 elif (localBestl>globalBestl): 

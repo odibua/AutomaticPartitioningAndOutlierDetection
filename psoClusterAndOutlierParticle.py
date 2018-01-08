@@ -58,27 +58,27 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
         #Initialize parameters important for propagating particles and evaluating their fitness with respect
         def __init__(self,optimType,c1,c2,w,posMin,posMax,velMin,velMax,fitnessFunction,fitnessEvaluationFunction):
             #Initialize parameters relevant to updating the velocity and position of particles
-            self.w=w;             
-            self.localBestFit=float("inf");
-            self.c1=c1; self.c2=c2;                
-            self.KpMin=posMin[0]; self.KpMax=posMax[0];
-            self.lMin=posMin[1];  self.lMax=posMax[1];
-            self.velMinKp=velMin[0]; self.velMaxKp=velMax[0];
-            self.velMinl=velMin[1]; self.velMaxl=velMax[1];
-            self.velMinCentroids=velMin[2]; self.velMaxCentroids=velMin[2];
-            self.featureMin=posMin[2]; self.featureMax=posMax[2];
+            self.w = w;             
+            self.localBestFit = float("inf");
+            self.c1 = c1; self.c2 = c2;                
+            self.KpMin = posMin[0]; self.KpMax = posMax[0];
+            self.lMin = posMin[1];  self.lMax = posMax[1];
+            self.velMinKp = velMin[0]; self.velMaxKp = velMax[0];
+            self.velMinl = velMin[1]; self.velMaxl = velMax[1];
+            self.velMinCentroids = velMin[2]; self.velMaxCentroids = velMin[2];
+            self.featureMin = posMin[2]; self.featureMax = posMax[2];
             
             #Initialize parameters relevant to describing the data and the assignment of data to centroids
-            self.data=copy.deepcopy(data);
-            shpData=np.shape(data);
-            self.nData=shpData[0];
-            self.nFeatures=len(self.featureMin);
-            self.numEmptyClusters=0;        
+            self.data = copy.deepcopy(data);
+            shpData = np.shape(data);
+            self.nData = shpData[0];
+            self.nFeatures = len(self.featureMin);
+            self.numEmptyClusters = 0;        
             
             #Initiaize strings and functions related to evaluating fitness
-            self.optimType=optimType.lower(); 
-            self.fitnessFunction=fitnessFunction;
-            self.fitnessEvaluationFunction=fitnessEvaluationFunction;
+            self.optimType = optimType.lower(); 
+            self.fitnessFunction = fitnessFunction;
+            self.fitnessEvaluationFunction = fitnessEvaluationFunction;
     
             #Initialize function that calculates distance between data
             self.sigma=sigma;
@@ -101,61 +101,61 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
                 self.velCentroids.append(np.array([0.0]*len(self.featureMin)));
                 for l in range(self.nFeatures):
                     r1=np.random.uniform();
-                    self.centroids[k][l]=(self.featureMax[l]-self.featureMin[l])*r1+self.featureMin[l];              
-            self.weightsOutliers=copy.deepcopy(np.array([0]*self.nData)) 
+                    self.centroids[k][l] = (self.featureMax[l]-self.featureMin[l])*r1 + self.featureMin[l];              
+            self.weightsOutliers = copy.deepcopy(np.array([0]*self.nData)) 
             
             #Assign data to initial centroids using the weights array, and remove the outliers, 
             #calculated according to some distance measure, from the data.
             self.weights = self.assignData(self.Kp,self.centroids,self.data);            
             self.weightsShape = np.shape(self.weights); 
-            self.centroids=self.calcCentroids(self.Kp,self.centroids,self.weights,self.data);
-            self.outliers=np.reshape(self.findOutliers(self.centroids,self.weights,self.data,self.l),(self.weightsShape[0]*self.weightsShape[1],1)); 
-            self.outliers=np.flip(np.argsort(self.outliers,axis=0),axis=0); #Store index of sorted outliers          
+            self.centroids = self.calcCentroids(self.Kp,self.centroids,self.weights,self.data);
+            self.outliers = np.reshape(self.findOutliers(self.centroids,self.weights,self.data,self.l),(self.weightsShape[0]*self.weightsShape[1],1)); 
+            self.outliers = np.flipud(np.argsort(self.outliers,axis=0)); #Store index of sorted outliers          
             self.outlierData = [] 
             self.removeOutliersFromClusters();
             
             #Recalculate centroids with outliers removed, count the number of empy centroids,
             #and evaluate particle fitnes
-            self.centroids=self.calcCentroids(self.Kp,self.centroids,self.weights,self.data);                   
+            self.centroids = self.calcCentroids(self.Kp,self.centroids,self.weights,self.data);                   
             self.cntEmptyClusters();                
-            self.currentFitness=self.fitnessFunction(self.distFunc,self.Kp,self.centroids,self.weights,self.data);#self.constKpFitFunc();
+            self.currentFitness = self.fitnessFunction(self.distFunc,self.Kp,self.centroids,self.weights,self.data);#self.constKpFitFunc();
 
             #Store initial state as personal best local state
-            self.localBestFitness=copy.deepcopy(self.currentFitness);
-            self.localBestKp=copy.deepcopy(self.Kp);
-            self.localBestCentroid=copy.deepcopy(self.centroids);
-            self.localBestNumEmptyClusters=copy.deepcopy(self.numEmptyClusters);
-            self.localBestl=copy.deepcopy(self.l);
-            self.localBestOutliers=copy.deepcopy(self.outlierData);
-            self.localBestWeights=copy.deepcopy(self.weights)
-            self.localBestWeightsOutliers=copy.deepcopy(self.weightsOutliers)
+            self.localBestFitness = copy.deepcopy(self.currentFitness);
+            self.localBestKp = copy.deepcopy(self.Kp);
+            self.localBestCentroid = copy.deepcopy(self.centroids);
+            self.localBestNumEmptyClusters = copy.deepcopy(self.numEmptyClusters);
+            self.localBestl = copy.deepcopy(self.l);
+            self.localBestOutliers = copy.deepcopy(self.outlierData);
+            self.localBestWeights = copy.deepcopy(self.weights)
+            self.localBestWeightsOutliers = copy.deepcopy(self.weightsOutliers)
 
         #Update velocity and position of particle
         def updateVelocityandPosition(self,globalBestState,t,constrict=None):  
             #Obtain global best components of particle solution
-            globalBestKp=globalBestState[1]
-            globalBestCentroid=globalBestState[2]
+            globalBestKp = globalBestState[1]
+            globalBestCentroid = globalBestState[2]
             globalBestl =  globalBestState[4]
             
             #Obtain coefficients used in particle propagation for particular time step
             if not np.isscalar(self.w): 
-                w=self.w[t];
-            else: w=self.w;          
+                w = self.w[t];
+            else: w = self.w;          
             if not np.isscalar(self.c1): 
-                c1=self.c1[t];
-            else: c1=self.c1;       
+                c1 = self.c1[t];
+            else: c1 = self.c1;       
             if not np.isscalar(self.c2): 
-                c2=self.c2[t];
+                c2 = self.c2[t];
             else: c2=self.c2;
             if (constrict is not None):
-                phi=c1+c2;
+                phi = c1 + c2;
                 constrFactor = 2.0/np.abs(2-phi-np.sqrt(phi**2-4*phi));
             else:
                 constrFactor = 1.0
                 
             #Update the velocity and position of number of clusters, and change number
             #of centroids to match updated number of clusters. Assign data to clusters.
-            r1=np.random.uniform(0,1);   r2=np.random.uniform(0,1);
+            r1 = np.random.uniform(0,1);   r2 = np.random.uniform(0,1);
             cognitiveVel = r1*c1*(self.localBestKp-self.Kp); 
             socialVel = r2*c2*(globalBestKp-self.Kp)
             self.velKp = constrFactor*(w*self.velKp + cognitiveVel + socialVel)
@@ -170,21 +170,21 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
                 self.weights = self.assignData(self.Kp,self.centroids,self.data);
 
             #Remove outliers from the data assigned to centroid
-            self.weightsShape=np.shape(self.weights);
-            self.outliers=np.reshape(self.findOutliers(self.centroids,self.weights,self.data,self.l),(self.weightsShape[0]*self.weightsShape[1],1)); 
-            self.outliers=np.flip(np.argsort(self.outliers,axis=0),axis=0); 
+            self.weightsShape = np.shape(self.weights);
+            self.outliers = np.reshape(self.findOutliers(self.centroids,self.weights,self.data,self.l),(self.weightsShape[0]*self.weightsShape[1],1)); 
+            self.outliers = np.flipud(np.argsort(self.outliers,axis=0)); 
             self.outlierData = [] 
             self.removeOutliersFromClusters();
             
             #Update the velocity and position of number of outliers, and change number
             #of outliers to match updated number of outliers
-            r1=np.random.uniform(0,1);   r2=np.random.uniform(0,1);
+            r1 = np.random.uniform(0,1);   r2 = np.random.uniform(0,1);
             cognitiveVel = r1*c1*(self.localBestl-self.l); 
             socialVel = r2*c2*(globalBestl-self.l)
             self.vell = constrFactor*(w*self.vell + cognitiveVel + socialVel)
             if (constrict is None):
                 self.vell = min(max(self.vell,self.velMinl),self.velMaxl);
-            self.l0=copy.deepcopy(self.l); 
+            self.l0 = copy.deepcopy(self.l); 
             self.l = min(max(np.round(self.l + self.vell),self.lMin),self.lMax);
             if (self.l>self.l0):
                 self.removeOutliersFromClusters();
@@ -201,7 +201,7 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
             #Update the kth centroid velocity and position according to nearest global best 
             #and personal best centroids. Assign data to these centroids, and re-calcuate centroids
             for j in range(self.nFeatures):          
-                r1=np.random.uniform(0,1);   r2=np.random.uniform(0,1);
+                r1 = np.random.uniform(0,1);   r2 = np.random.uniform(0,1);
                 cognitiveVel = r1*c1*(localBestCentroid[j]-self.centroids[k][j]);
                 socialVel = r2*c2*(globalBestCentroid[j]-self.centroids[k][j]);
                 self.velCentroids[k][j] = constrFactor*(w*self.velCentroids[k][j] + cognitiveVel + socialVel);
@@ -212,32 +212,32 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
             self.calcCentroids(self.Kp,self.centroids,self.weights,self.data)
             
             #Remove outliers from the data assigned to centroids, calculate new centroids, and count number of clusters
-            self.weightsShape=np.shape(self.weights); 
-            self.outliers=np.reshape(self.findOutliers(self.centroids,self.weights,self.data,self.l),(self.weightsShape[0]*self.weightsShape[1],1)); 
-            self.outliers=np.flip(np.argsort(self.outliers,axis=0),axis=0); 
+            self.weightsShape = np.shape(self.weights); 
+            self.outliers = np.reshape(self.findOutliers(self.centroids,self.weights,self.data,self.l),(self.weightsShape[0]*self.weightsShape[1],1)); 
+            self.outliers = np.flipud(np.argsort(self.outliers,axis=0)); 
             self.outlierData = [] 
             self.removeOutliersFromClusters();      
-            self.centroids=self.calcCentroids(self.Kp,self.centroids,self.weights,self.data); 
+            self.centroids = self.calcCentroids(self.Kp,self.centroids,self.weights,self.data); 
             self.cntEmptyClusters(); 
         
         #Update personal best solution
         def updateLocalBest(self):
             #Calculate the fitness of the current solution, and store current state
-            self.currentFitness=self.fitnessFunction(self.distFunc,self.Kp,self.centroids,self.weights,self.data);#self.constKpFitFunc();              
+            self.currentFitness = self.fitnessFunction(self.distFunc,self.Kp,self.centroids,self.weights,self.data);#self.constKpFitFunc();              
             currentState = (self.currentFitness,self.Kp,self.centroids,self.numEmptyClusters,self.l,self.outlierData,self.weights,self.weightsOutliers)
             
             #Store state of personal best solution and update personal best solution based on the 
             #fitness evaluation function
             localBestState = (self.localBestFitness,self.localBestKp,self.localBestCentroid,self.localBestNumEmptyClusters,self.localBestl,self.localBestOutliers,self.localBestWeights,self.localBestWeightsOutliers)
             localBestState = self.fitnessEvaluationFunction(self.optimType,currentState,localBestState);
-            self.localBestFitness=localBestState[0]
-            self.localBestKp=localBestState[1]
-            self.localBestCentroid=localBestState[2]
-            self.localBestNumEmptyClusters=localBestState[3]  
-            self.localBestl=localBestState[4]
-            self.localBestOutliers=localBestState[5]
-            self.localBestWeights=localBestState[6]
-            self.localBestWeightsOutliers=localBestState[7]; 
+            self.localBestFitness = localBestState[0]
+            self.localBestKp = localBestState[1]
+            self.localBestCentroid = localBestState[2]
+            self.localBestNumEmptyClusters = localBestState[3]  
+            self.localBestl = localBestState[4]
+            self.localBestOutliers = localBestState[5]
+            self.localBestWeights = localBestState[6]
+            self.localBestWeightsOutliers = localBestState[7]; 
  
             return localBestState 
         
@@ -257,12 +257,12 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
             #Assign data to centroids based minimal distance
             #and update weights
             if (self.Kp>1):
-                centroidAssignments=np.argmin(distArr,axis=0); 
+                centroidAssignments = np.argmin(distArr,axis=0); 
             else:
-                centroidAssignments=np.array([0]*nData)
+                centroidAssignments = np.array([0]*nData)
             if (self.Kp>1):
                 for j in range(nData):
-                    w[centroidAssignments[j]][j]=1;   
+                    w[centroidAssignments[j]][j] = 1;   
             else:
                 w = np.ones((1,nData)).astype(int)
             return w;
@@ -271,7 +271,7 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
         def calcCentroids(self,K,centroids,weights,data):
             for k in range(int(K)):
                 if (np.sum(weights[k])>0):
-                    centroids[k]=np.mean(data[np.where(weights[k]==1)[0]],axis=0)
+                    centroids[k] = np.mean(data[np.where(weights[k]==1)[0]],axis=0)
             return centroids
         
         #Calculate euclidean distance
@@ -279,33 +279,33 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
             shape=np.shape(xi)
             shape2=np.shape(xq)
             if (xi.ndim>1 or xq.ndim>1):
-                norm=np.linalg.norm(xi-xq,axis=1);
+                norm = np.linalg.norm(xi-xq,axis=1);
             else:
-                norm=np.linalg.norm(xi-xq)  
+                norm = np.linalg.norm(xi-xq)  
             return norm
         
         #Calculate distance based on gaussian kernel
         def gaussDist(self,xi,xq):
-            shape=np.shape(xi)
-            shape2=np.shape(xq)
+            shape = np.shape(xi)
+            shape2 = np.shape(xq)
             if (xi.ndim>1 or xq.ndim>1):
-                norm=np.linalg.norm(xi-xq,axis=1);
+                norm = np.linalg.norm(xi-xq,axis=1);
             else:
-                norm=np.linalg.norm(xi-xq)  
+                norm = np.linalg.norm(xi-xq)  
                 
-            sigma=self.sigma
+            sigma = self.sigma
             return 2*(1-np.exp(-0.5*(norm**2)/sigma**2))
         
         #Count number of centroids with no assigned data
         def cntEmptyClusters(self):
-            empCluster=np.where(np.sum(self.weights,axis=1)<=1)[0];
-            self.numEmptyClusters=len(empCluster)           
+            empCluster = np.where(np.sum(self.weights,axis=1)==0)[0];
+            self.numEmptyClusters = len(empCluster)           
         
         #Split largest centroid in particle until it matches the 
         #updated number of centroids
         def splitCentroids(self):
-            nCurr=len(self.centroids);
-            targetKp=copy.deepcopy(self.Kp)
+            nCurr = len(self.centroids);
+            targetKp = copy.deepcopy(self.Kp)
 
             while(nCurr<targetKp):
                 maxClust = np.argmax(np.sum(self.weights,axis=1)); #Find cluster with most data assigned to it
@@ -314,11 +314,11 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
                 datLowerBound = np.min(datInMaxClust,axis=0);
                 newCent = np.array([0.0]*self.nFeatures);
                 for j in range(self.nFeatures):
-                    r1=np.random.uniform();
+                    r1 = np.random.uniform();
                     newCent[j] = (datUpperBound[j]-datLowerBound[j])*r1+datLowerBound[j];
                 self.centroids.append(newCent);
-                nCurr=nCurr+1;
-                self.Kp=nCurr
+                nCurr = nCurr + 1;
+                self.Kp = nCurr
                 self.velCentroids.append(self.velCentroids[maxClust])
                 self.weights = self.assignData(self.Kp,self.centroids,self.data)
                 self.cntEmptyClusters(); 
@@ -328,10 +328,10 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
         def findOutliers(self,centroids,weights,data,l):
             distOutlier=weights*0.0;
             for k in range(int(self.Kp)):
-                datInClust=data[np.where(weights[k][0:]==1)[0],0:];
+                datInClust = data[np.where(weights[k][0:]==1)[0],0:];
                 if (len(datInClust)>0):
-                    d=self.distFunc(centroids[k],datInClust); 
-                    distOutlier[k][np.where(weights[k][0:]==1)[0]]=d;
+                    d = self.distFunc(centroids[k],datInClust); 
+                    distOutlier[k][np.where(weights[k][0:]==1)[0]] = d;
             return distOutlier    
         
         #Delete smallest centroids until it matches the updated 
@@ -344,8 +344,8 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
                minClust = np.argmin(np.sum(self.weights,axis=1)); 
                del self.centroids[minClust]
                del self.velCentroids[minClust]           
-               nCurr=nCurr-1
-               self.Kp=nCurr
+               nCurr = nCurr - 1
+               self.Kp = nCurr
                self.weights = self.assignData(self.Kp,self.centroids,self.data); 
                self.cntEmptyClusters(); 
          
@@ -356,18 +356,19 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
             for j in range(int(self.l)):
                 #Store data that corresponds to outliers 
                 if (j==0):
-                    self.outlierData=copy.deepcopy(self.data[np.array(self.outliers[j]).astype(int)
+                    self.outlierData = copy.deepcopy(self.data[np.array(self.outliers[j]).astype(int)
                         -np.floor(self.outliers[j]/self.weightsShape[1]).astype(int)*self.weightsShape[1],0:]);
                 else:
-                    self.outlierData=np.vstack([copy.deepcopy(self.outlierData),copy.deepcopy(self.data[np.array(self.outliers[j]).astype(int)
+                    self.outlierData = np.vstack([copy.deepcopy(self.outlierData),copy.deepcopy(self.data[np.array(self.outliers[j]).astype(int)
                         -np.floor(self.outliers[j]/self.weightsShape[1]).astype(int)*self.weightsShape[1],0:])])
 
                 #Remove outliers from weights that assign data to centroids, and add them
                 #to outlier weights
                 self.weights[np.floor(self.outliers[j]/self.weightsShape[1]).astype(int),np.array(self.outliers[j]).astype(int)
-                    -np.floor(self.outliers[j]/self.weightsShape[1]).astype(int)*self.weightsShape[1]] = 0;
+                    - np.floor(self.outliers[j]/self.weightsShape[1]).astype(int)*self.weightsShape[1]] = 0;
+                
                 self.weightsOutliers[np.array(self.outliers[j]).astype(int)
-                    -np.floor(self.outliers[j]/self.weightsShape[1]).astype(int)*self.weightsShape[1]] = 1; 
+                    - np.floor(self.outliers[j]/self.weightsShape[1]).astype(int)*self.weightsShape[1]] = 1; 
         
         #Add outliers to cluster until it matches updated number of outliers       
         def addOutliersToCluster(self):
@@ -375,6 +376,7 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
                 #Add outliers to weights that assign data to centroids, and remove 
                 #them from outlier weights
                 self.weights[np.floor(self.outliers[j]/self.weightsShape[1]).astype(int),np.array(self.outliers[j]).astype(int)-np.floor(self.outliers[j]/self.weightsShape[1]).astype(int)*self.weightsShape[1]] = 1;
+                
                 self.weightsOutliers[np.array(self.outliers[j]).astype(int)
                     -np.floor(self.outliers[j]/self.weightsShape[1]).astype(int)*self.weightsShape[1]] = 0;
             del list(self.outlierData)[int(self.l)-1:int(self.l0)-1]; 
@@ -382,6 +384,5 @@ def psoParticleClustersAndOutliersFunc(data,sigma):
         #Return the current state
         def getCurrState(self):
             currentState = (self.currentFitness,self.Kp,self.centroids,self.numEmptyClusters,self.l,self.outlierData,self.weights,self.weightsOutliers)
-            return currentState
-        
+            return currentState       
     return psoParticleClusterAndOutliers

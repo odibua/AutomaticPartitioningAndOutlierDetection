@@ -27,9 +27,6 @@ https://link.springer.com/article/10.1007/s10044-004-0218-1
 [4] Behesti et al., "Non-parametric particle swarm optimization for global optimization",Applied Soft. Computing. 2015
 http://www.sciencedirect.com/science/article/pii/S1568494614006474
 
-# Required Packages
-
-This code only requires the presence of scipy, numpy, random, and copy
 
 # Running Tests
 

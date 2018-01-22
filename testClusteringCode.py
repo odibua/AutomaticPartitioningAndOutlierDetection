@@ -193,7 +193,9 @@ for j in range(nTrials):
  
     (bestGlobalFitness[str(j+1)],bestGlobalKp[str(j+1)],bestGlobalCentroids[str(j+1)],
     bestGlobalNumEmptyClusters[str(j+1)],bestGloball[str(j+1)],bestGlobalOutliers[str(j+1)],
-    weights[str(j+1)],weightsOutliers[str(j+1)]) = evalState
+    weights[str(j+1)],weightsOutliers[str(j+1)]) = evalState;
+    
+    
 
 
 

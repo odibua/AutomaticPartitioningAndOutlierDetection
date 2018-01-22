@@ -27,18 +27,19 @@ https://link.springer.com/article/10.1007/s10044-004-0218-1
 [4] Behesti et al., "Non-parametric particle swarm optimization for global optimization",Applied Soft. Computing. 2015
 http://www.sciencedirect.com/science/article/pii/S1568494614006474
 
-# Required Packages
-
-This code only requires the presence of scipy, numpy, random, and copy
 
 # Running Tests
 
-Tests can be run through the testClusteringCode file. At the top of the file you can choose the data set
-to test the algorithm on. The algorithm works perfectly on the artificial data sets.
+Tests can be run through the testClusteringCode file. The selected test data, type of PSO used, and number of trials in the optimization are passed in as arguments in that order. 
 
-     testString =['shuttle','wdbc','wine','iris','ArtificialOutliers','ArtificialNoOutliers']
-     #Choose data for testing algorithm
-     testUse=testString[5]
+     #Choose data for testing algorithm and method of optimization
+     testUse=sys.argv[1]; methodUse=sys.argv[2]; nTrials=int(sys.argv[3]);
+
+The  valid inputs for the first two arguments are among the following two lists respectively
+
+     testString =['shuttle','wdbc','wine','iris','glass','ArtificialOutliers','ArtificialNoOutliers']
+     methodString = ['PSO','GCPSO','NPSO']
+
 
 The variables that characterize the particles to be used in the optimization are modified below:
 
